@@ -28,7 +28,8 @@ Creating a payment plugin for WhatsApp called "WHATPAY" involves multiple steps 
 2. **Frontend Development**
 
     **React Native App**:
-    - Install React Native and create a new project.
+    - 
+     and create a new project.
     - Create screens for login, catalog browsing, product details, and payment.
     - Integrate with WhatsApp API for user authentication.
     - Integrate PayPal and MPesa SDKs for payment processing.
