@@ -1,0 +1,17 @@
+{
+  "name": "whatspay",
+  "version": "1.0.0",
+  "description": "WhatsApp payment integration plugin enabling secure transactions via PayPal and MPesa",
+  "scripts": {
+    "start:backend": "cd backend && npm run start",
+    "start:web": "cd frontend/web && npm start",
+    "start:mobile": "cd frontend/mobile && npm start",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend/web && npm install && cd ../mobile && npm install"
+  },
+  "workspaces": [
+    "backend",
+    "frontend/*"
+  ],
+  "author": "",
+  "license": "MIT"
+}
