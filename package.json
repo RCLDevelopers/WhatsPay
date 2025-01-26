@@ -3,15 +3,23 @@
   "version": "1.0.0",
   "description": "WhatsApp payment integration plugin enabling secure transactions via PayPal and MPesa",
   "scripts": {
-    "start:backend": "cd backend && npm run start",
-    "start:web": "cd frontend/web && npm start",
-    "start:mobile": "cd frontend/mobile && npm start",
-    "install:all": "npm install && cd backend && npm install && cd ../frontend/web && npm install && cd ../mobile && npm install"
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "cd backend && npm run dev",
+    "start:frontend": "cd frontend/web && npm start",
+    "dev": "npm run start",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend/web && npm install",
+    "dev:windows": "start-dev.bat",
+    "dev:unix": "bash start-dev.sh",
+    "mongodb:setup": "setup-mongodb.bat",
+    "mongodb:start": "mongod --config backend/config/mongod.conf"
   },
   "workspaces": [
     "backend",
     "frontend/*"
   ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.0.1"
+  }
 }
