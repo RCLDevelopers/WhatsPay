@@ -8,8 +8,12 @@ import {
   Paper,
   Button,
   makeStyles,
+  TextField,
 } from '@material-ui/core';
 import { ArrowBack, ArrowForward } from '@material-ui/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { useMPesaValidation } from '../../hooks/useMPesaValidation';
+import { setPaymentMethod, processMPesaPayment } from '../../store/slices/paymentSlice';
 
 const useStyles = makeStyles((theme) => ({
   paymentMethod: {
@@ -34,10 +38,35 @@ const useStyles = makeStyles((theme) => ({
 
 const PaymentMethod = ({ onNext, onBack }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.payment);
+  const {
+    phoneNumber,
+    errors,
+    handlePhoneChange,
+    isValid,
+  } = useMPesaValidation();
   const [paymentMethod, setPaymentMethod] = useState('paypal');
 
   const handlePaymentMethodChange = (event) => {
     setPaymentMethod(event.target.value);
+  };
+
+  const handleSubmit = async () => {
+    if (paymentMethod === 'mpesa' && !isValid) {
+      return;
+    }
+
+    try {
+      if (paymentMethod === 'mpesa') {
+        await dispatch(processMPesaPayment({ phoneNumber })).unwrap();
+      } else {
+        await dispatch(processPayPalPayment()).unwrap();
+      }
+      onNext();
+    } catch (error) {
+      // Error is handled by Redux
+    }
   };
 
   return (
@@ -88,8 +117,23 @@ const PaymentMethod = ({ onNext, onBack }) => {
           <Typography variant="body2">
             Enter your M-PESA phone number to receive payment prompt
           </Typography>
-          {/* Add phone number input field here */}
+          <TextField
+            fullWidth
+            label="M-PESA Phone Number"
+            value={phoneNumber}
+            onChange={(e) => handlePhoneChange(e.target.value)}
+            error={!!errors.phoneNumber}
+            helperText={errors.phoneNumber}
+            disabled={loading}
+            margin="normal"
+          />
         </Paper>
+      )}
+
+      {error && (
+        <Typography color="error" variant="body2">
+          {error}
+        </Typography>
       )}
 
       <div className={classes.buttons}>
@@ -103,7 +147,7 @@ const PaymentMethod = ({ onNext, onBack }) => {
           variant="contained"
           color="primary"
           endIcon={<ArrowForward />}
-          onClick={onNext}
+          onClick={handleSubmit}
         >
           Continue
         </Button>
